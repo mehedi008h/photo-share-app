@@ -1,6 +1,11 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import ip from "ip";
+
+import { connectDatabase } from "../src/config/database";
+
+dotenv.config();
 
 export class App {
     private readonly app: Application;
@@ -12,6 +17,7 @@ export class App {
         this.app = express();
         this.middleware();
         this.routes();
+        this.initialiseDatabaseConnection();
     }
 
     // listning port
@@ -33,5 +39,9 @@ export class App {
         this.app.get("/", (req: Request, res: Response) => {
             res.status(200).send({ message: "Welcome to Photo Share app." });
         });
+    }
+
+    private initialiseDatabaseConnection(): void {
+        connectDatabase();
     }
 }

@@ -7,6 +7,7 @@ import { connectDatabase } from "../src/config/database";
 import { Code } from "./enum/code.enum";
 import { HttpResponse } from "./domain/response";
 import { Status } from "./enum/status.enum";
+import authRoutes from "./routes/auth.routes";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ export class App {
 
     // routes
     private routes(): void {
+        this.app.use("/api/v1", authRoutes);
         this.app.get("/", (req: Request, res: Response) => {
             res.status(Code.OK).send(
                 new HttpResponse(
@@ -62,6 +64,7 @@ export class App {
         });
     }
 
+    // database connection
     private initialiseDatabaseConnection(): void {
         connectDatabase();
     }

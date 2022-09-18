@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
-import IUser from "../interfaces/user.interface";
+import { IUser } from "../interfaces/user.interface";
 
 const UserSchema: Schema = new Schema(
     {

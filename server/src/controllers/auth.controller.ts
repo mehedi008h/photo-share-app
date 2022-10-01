@@ -3,8 +3,9 @@ import { HttpResponse } from "../domain/response";
 import { Code } from "../enum/code.enum";
 import { Status } from "../enum/status.enum";
 import { IUser } from "../interfaces/user.interface";
+
 import User from "../models/user.model";
-import { ErrorHandler } from "../utils/errorHandler";
+
 import { sendToken } from "../utils/jwtToken";
 
 // register user
@@ -48,21 +49,39 @@ export const loginUser = async (
 
     // Checks if email and password is entered by user
     if (!email || !password) {
-        return next(new ErrorHandler("Please enter email & password", 400));
+        return res.send(
+            new HttpResponse(
+                Code.BAD_REQUEST,
+                Status.BAD_REQUEST,
+                "Invalid Email or Password"
+            )
+        );
     }
 
     // Finding user in database
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-        return next(new ErrorHandler("Invalid Email or Password", 401));
+        return res.send(
+            new HttpResponse(
+                Code.BAD_REQUEST,
+                Status.BAD_REQUEST,
+                "Invalid Email or Password"
+            )
+        );
     }
 
     // Checks if password is correct or not
     const isPasswordMatched = await user.matchPassword(password);
 
     if (!isPasswordMatched) {
-        return next(new ErrorHandler("Invalid Email or Password", 401));
+        return res.send(
+            new HttpResponse(
+                Code.BAD_REQUEST,
+                Status.BAD_REQUEST,
+                "Invalid Email or Password"
+            )
+        );
     }
 
     sendToken(user, 200, res);

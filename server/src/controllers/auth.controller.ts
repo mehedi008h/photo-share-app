@@ -86,3 +86,9 @@ export const loginUser = async (
 
     sendToken(user, 200, res);
 };
+
+export const loggedInUser = async (
+        req: Request,res: Response, next: NextFunction
+) => {
+
+}

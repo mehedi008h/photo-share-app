@@ -88,7 +88,7 @@ export const loginUser = async (
 };
 
 export const loggedInUser = async (
-        req: Request,res: Response, next: NextFunction
-) => {
-
-}
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {};

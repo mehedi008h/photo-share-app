@@ -1,13 +1,43 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login_image } from "../../constants/images";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useAppDispatch } from "../../store/hooks";
+import { useSigninUserMutation } from "../../store/api/authApi";
+import { setUser } from "../../store/state/authSlice";
 
 interface ILoginProps {}
 
 const Login: React.FC<ILoginProps> = (props) => {
     // state
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
     const [showPassword, setShowpassword] = React.useState(false);
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const [signinUser, { data, isLoading, error, isError, isSuccess }] =
+        useSigninUserMutation();
+
+    console.log(data);
+
+    const handleSubmit = () => {
+        signinUser({ email, password });
+    };
+
+    if (isSuccess) {
+        dispatch(
+            setUser({
+                token: data.token,
+                success: data.success,
+                user: data.user,
+            })
+        );
+        navigate("/");
+        localStorage.setItem("token", data.token);
+    }
+
     return (
         <div className="min-h-screen bg-gray-100 w-full flex justify-center items-center">
             <div className="bg-white w-2/3 shadow-md p-5 rounded-md grid grid-cols-12 gap-3">
@@ -41,6 +71,9 @@ const Login: React.FC<ILoginProps> = (props) => {
                                 type="email"
                                 className="border outline-none px-4 py-2 rounded-full focus:border-blue-400"
                                 placeholder="example@gmail.com"
+                                name="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col gap-2">
@@ -55,6 +88,11 @@ const Login: React.FC<ILoginProps> = (props) => {
                                     type={showPassword ? "text" : "password"}
                                     className="border w-full outline-none px-4 py-2 rounded-full focus:border-blue-400"
                                     placeholder="Enter your password"
+                                    name="password"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                 />
                                 {showPassword ? (
                                     <AiOutlineEyeInvisible
@@ -84,7 +122,10 @@ const Login: React.FC<ILoginProps> = (props) => {
                             </Link>
                         </div>
                         <div className="text-center">
-                            <button className="bg-blue-500 px-4 py-2 rounded-full text-white w-3/4 mx-auto">
+                            <button
+                                onClick={handleSubmit}
+                                className="bg-blue-500 px-4 py-2 rounded-full text-white w-3/4 mx-auto"
+                            >
                                 Sign in
                             </button>
                         </div>
